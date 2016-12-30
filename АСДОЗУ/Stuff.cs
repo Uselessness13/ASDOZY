@@ -35,6 +35,7 @@ namespace АСДОЗУ
 
         private void add_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "INSERT INTO Сотрудники (Фамилия, Имя, Отчество) VALUES (?, ?, ?)";
             command.Parameters.Add("Фамилия", dabse.OleDbType.VarWChar).Value = fam.Text;
             command.Parameters.Add("Имя", dabse.OleDbType.VarWChar).Value = imya.Text;
@@ -56,6 +57,7 @@ namespace АСДОЗУ
 
         private void save_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "UPDATE Сотрудники SET Фамилия= ?, Имя= ?, Отчество=? WHERE (Номер_сотрудника= ?)";
             command.Parameters.Add("Фамилия", dabse.OleDbType.VarWChar, 50, "Фамилия");
             command.Parameters.Add("Имя", dabse.OleDbType.VarWChar, 50, "Имя");
@@ -77,12 +79,20 @@ namespace АСДОЗУ
 
         private void deleter_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "Delete from " + nameoftable + " where Номер_сотрудника= ?";
             command.Connection = Date_baseone;
             int shifrec = (int)dataGridView1.CurrentRow.Cells[0].Value;
             command.Parameters.Add("Номер_сотрудника", dabse.OleDbType.Integer, 50).Value = shifrec;
-            int deletedrows = command.ExecuteNonQuery();
-            MessageBox.Show("Удалено " + deletedrows + " ззаписей");
+            try
+            {
+                int deletedrows = command.ExecuteNonQuery();
+                MessageBox.Show("Удалено " + deletedrows + " записей");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Данную запись нелььзя удалить, так как она связана с другими");
+            }
         }
 
         private void close_Click(object sender, EventArgs e)

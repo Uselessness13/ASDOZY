@@ -25,6 +25,7 @@ namespace АСДОЗУ
 
         private void add_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "INSERT INTO Цеха (Название_цеха, Сотрудник_цеха) VALUES (?, ?)";
             command.Parameters.Add("Название_цеха", dabse.OleDbType.VarWChar).Value = name.Text;
             command.Parameters.Add("Сотрудник_цеха", dabse.OleDbType.Integer).Value = int.Parse(sotr.SelectedValue.ToString());
@@ -74,6 +75,7 @@ namespace АСДОЗУ
 
         private void save_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "UPDATE Цеха SET Название_цеха=?, Сотрудник_цеха=? WHERE (Код_цеха= ?)";
             command.Parameters.Add("Название_цеха", dabse.OleDbType.VarWChar, 150, "Название_цеха");
             command.Parameters.Add("Сотрудник_цеха", dabse.OleDbType.Integer, 50, "Сотрудник_цеха");
@@ -94,14 +96,21 @@ namespace АСДОЗУ
 
         private void deleter_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "Delete from " + nameoftable + " where Код_цеха= ?";
             command.Connection = Date_baseone;
             int shifrec = (int)dataGridView1.CurrentRow.Cells[0].Value;
-            MessageBox.Show(shifrec+"");
+            //MessageBox.Show(shifrec+"");
             command.Parameters.Add("Код_цеха", dabse.OleDbType.Integer, 50).Value = shifrec;
-            MessageBox.Show(command.CommandText);
-            int deletedrows = command.ExecuteNonQuery();
-            MessageBox.Show("Удалено " + deletedrows + " ззаписей");
+            try
+            {
+                int deletedrows = command.ExecuteNonQuery();
+                MessageBox.Show("Удалено " + deletedrows + " записей");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Данную запись нелььзя удалить, так как она связана с другими");
+            }
         }
 
         private void close_Click(object sender, EventArgs e)

@@ -112,6 +112,7 @@ namespace АСДОЗУ
 
         private void add_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "INSERT INTO Диспетчирование (Код_склада, Код_цеха, Номер_продукта, Количество) VALUES (?, ?, ?, ?)";
             command.Parameters.Add("Код_склада", dabse.OleDbType.Integer).Value = int.Parse(sklad.SelectedValue.ToString());
             command.Parameters.Add("Код_цеха", dabse.OleDbType.Integer).Value = int.Parse(ceh.SelectedValue.ToString());
@@ -133,6 +134,7 @@ namespace АСДОЗУ
 
         private void save_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "UPDATE Диспетчирование SET Код_склада=?, Код_цеха=?, Номер_продукта=?, Количество=? WHERE (id=?)";
             command.Parameters.Add("Код_склада", dabse.OleDbType.Integer, 50, "Код_склада");
             command.Parameters.Add("Код_цеха", dabse.OleDbType.Integer, 50, "Код_цеха");
@@ -155,14 +157,21 @@ namespace АСДОЗУ
 
         private void deleter_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "Delete from " + nameoftable + " where id= ?";
             command.Connection = Date_baseone;
             int shifrec = (int)dataGridView1.CurrentRow.Cells[0].Value;
-            MessageBox.Show(shifrec + "");
+            //MessageBox.Show(shifrec + "");
             command.Parameters.Add("id", dabse.OleDbType.Integer, 50).Value = shifrec;
-            MessageBox.Show(command.CommandText);
-            int deletedrows = command.ExecuteNonQuery();
-            MessageBox.Show("Удалено " + deletedrows + " ззаписей");
+            try
+            {
+                int deletedrows = command.ExecuteNonQuery();
+                MessageBox.Show("Удалено " + deletedrows + " записей");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Данную запись нелььзя удалить, так как она связана с другими");
+            }
         }
 
         private void close_Click(object sender, EventArgs e)

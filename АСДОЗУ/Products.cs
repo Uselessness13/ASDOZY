@@ -35,6 +35,7 @@ namespace АСДОЗУ
 
         private void add_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "INSERT INTO Продукты (Название_продукта, Описание_продукта) VALUES (?, ?)";
             command.Parameters.Add("Название_продукта", dabse.OleDbType.VarWChar).Value = name.Text;
             command.Parameters.Add("Описание_продукта", dabse.OleDbType.VarWChar).Value = description.Text;
@@ -75,13 +76,21 @@ namespace АСДОЗУ
 
         private void deleter_Click(object sender, EventArgs e)
         {
+            var command = new dabse.OleDbCommand();
             command.CommandText = "Delete from " + nameoftable + " where Номер_продукта= ?";
             command.Connection = Date_baseone;
             int shifrec = (int)dataGridView1.CurrentRow.Cells[0].Value;
             //MessageBox.Show("" + shifrec);
             command.Parameters.Add("Номер_продукта", dabse.OleDbType.Integer, 50).Value = shifrec;
-            int deletedrows = command.ExecuteNonQuery();
-            MessageBox.Show("Удалено " + deletedrows + " ззаписей");
+            try
+            {
+                int deletedrows = command.ExecuteNonQuery();
+                MessageBox.Show("Удалено " + deletedrows + " записей");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Данную запись нелььзя удалить, так как она связана с другими");
+            }
         }
 
         private void close_Click(object sender, EventArgs e)
